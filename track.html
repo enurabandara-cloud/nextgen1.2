@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Track Order – Medusa Nextgen Display</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Roboto',sans-serif;background:#0d0f14;color:#fff;display:flex;flex-direction:column;align-items:center;padding:40px 20px;}
+h1{font-family:'Orbitron',sans-serif;font-size:2.5rem;margin-bottom:30px;letter-spacing:1px;color:#00e5ff;}
+.input-group{display:flex;max-width:400px;width:100%;margin-bottom:20px;}
+.input-group input{flex:1;padding:15px;font-size:1rem;border:none;border-radius:4px 0 0 4px;}
+.input-group button{padding:15px 25px;font-size:1rem;background:#0066ff;border:none;color:#fff;border-radius:0 4px 4px 0;cursor:pointer;transition:background .3s;}
+.input-group button:hover{background:#0051cc;}
+#status{margin-top:30px;font-size:1.3rem;text-align:center;}
+#status a{display:inline-block;margin-top:15px;padding:12px 20px;background:linear-gradient(90deg,#00e5ff,#0066ff);color:#fff;text-decoration:none;border-radius:6px;font-weight:500;transition:transform .3s;}
+#status a:hover{transform:scale(1.05);}
+</style>
+</head>
+<body>
+<h1>Track Your Order</h1>
+<div class="input-group">
+<input type="text" id="orderID" placeholder="Enter your Order ID">
+<button onclick="checkOrder()">Check</button>
+</div>
+<p id="status">Please enter your Order ID above.</p>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+// Firebase config placeholder
+const firebaseConfig={
+ apiKey: "AIzaSyCyBWuKREPhHPOEFVxUGszbpDdXKQGcdEg",
+  authDomain: "repairtrackersystem.firebaseapp.com",
+  projectId: "repairtrackersystem",
+  storageBucket: "repairtrackersystem.firebasestorage.app",
+  messagingSenderId: "181636666453",
+  appId: "1:181636666453:web:9fa73b02c4a6cbba7370dc"
+};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+
+async function checkOrder(){
+  const id=document.getElementById("orderID").value.trim();
+  if(!id){document.getElementById("status").innerText="Order ID is required.";return;}
+  const snapshot=await db.collection("orders").where("orderID","==",id).get();
+  if(!snapshot.empty){
+    const order=snapshot.docs[0].data();
+    const balance=(order.totalAmount || 0) - (order.advancePaid || 0);
+    document.getElementById("status").innerHTML=`
+      <strong>Status:</strong> ${order.status}<br>
+      <strong>Advance Paid:</strong> Rs ${order.advancePaid || 0}<br>
+      <strong>Balance:</strong> Rs ${balance}<br>
+      <a href="https://wa.me/${order.phoneNumber}?text=Hi%20there,%20I%20would%20like%20to%20track%20my%20order%20${id}" target="_blank">Contact via WhatsApp</a>`;
+  }else{
+    document.getElementById("status").innerText="Order not found. Please check your Order ID.";
+  }
+}
+</script>
+</body>
+</html>

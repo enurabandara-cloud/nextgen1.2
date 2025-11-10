@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin – Medusa Nextgen Display</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Roboto',sans-serif;background:#141414;color:#ccc;padding:40px 20px;}
+h1{text-align:center;font-family:'Orbitron',sans-serif;font-size:2.5rem;color:#00e5ff;margin-bottom:30px;}
+
+/* LOGIN PANEL */
+#loginPanel{max-width:400px;margin:100px auto;background:#1f1f1f;padding:30px;border-radius:10px;text-align:center;}
+#loginPanel input{width:100%;padding:12px;font-size:1rem;margin-bottom:15px;border:none;border-radius:6px;background:#2a2a2a;color:#fff;}
+#loginPanel button{width:100%;padding:15px;font-size:1.1rem;background:linear-gradient(90deg,#00e5ff,#0066ff);border:none;color:#fff;border-radius:8px;cursor:pointer;transition:transform .3s;}
+#loginPanel button:hover{transform:scale(1.03);}
+#loginMessage{margin-top:10px;color:#ff4d4d;font-weight:500;}
+
+/* ADMIN CONTENT */
+#adminContent{display:none;}
+.panel{max-width:600px;margin:20px auto;background:#1f1f1f;padding:30px;border-radius:10px;}
+.panel h2{color:#fff;margin-bottom:15px;}
+.panel input,.panel select{width:100%;padding:12px;font-size:1rem;margin-bottom:15px;border:none;border-radius:6px;background:#2a2a2a;color:#fff;}
+.panel button{width:100%;padding:15px;font-size:1.1rem;background:linear-gradient(90deg,#00e5ff,#0066ff);border:none;color:#fff;border-radius:8px;cursor:pointer;transition:transform .3s;}
+.panel button:hover{transform:scale(1.03);}
+#message{margin-top:20px;font-size:1.1rem;text-align:center;color:#00ff99;}
+</style>
+</head>
+<body>
+
+<h1>Admin Panel – Medusa Nextgen Display</h1>
+
+<!-- LOGIN PANEL -->
+<div id="loginPanel">
+  <h2>Login</h2>
+  <input type="text" id="adminUser" placeholder="Username">
+  <input type="password" id="adminPass" placeholder="Password">
+  <button onclick="checkLogin()">Login</button>
+  <p id="loginMessage"></p>
+</div>
+
+<!-- ADMIN CONTENT -->
+<div id="adminContent">
+
+<div class="panel">
+<h2>Add / Update Order</h2>
+<input type="text" id="customerName" placeholder="Customer Name">
+<input type="text" id="phoneNumber" placeholder="Phone Number (e.g. 9477…)">
+<input type="text" id="orderID" placeholder="Order ID">
+<input type="number" id="advancePaid" placeholder="Advance Paid (Rs)">
+<input type="number" id="totalAmount" placeholder="Total Amount (Rs)">
+<select id="status">
+<option>Order Placed</option>
+<option>Shipped from China</option>
+<option>Received Sri Lanka</option>
+<option>Custom Clearance</option>
+<option>Ready to Collect</option>
+</select>
+<button onclick="addOrder()">Add / Update Order</button>
+</div>
+
+<div class="panel">
+<h2>Add / Update Inventory</h2>
+<input type="text" id="itemName" placeholder="Item Name">
+<input type="number" id="price" placeholder="Price">
+<input type="number" id="quantity" placeholder="Quantity">
+<input type="number" id="reorderLevel" placeholder="Reorder Level">
+<button onclick="addInventory()">Add / Update Item</button>
+</div>
+
+<p id="message"></p>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+// PASSWORD PROTECTION
+function checkLogin(){
+  const user=document.getElementById('adminUser').value;
+  const pass=document.getElementById('adminPass').value;
+  if(user==='Enura' && pass==='Enu123'){
+    document.getElementById('loginPanel').style.display='none';
+    document.getElementById('adminContent').style.display='block';
+  }else{
+    document.getElementById('loginMessage').innerText='Incorrect username or password.';
+  }
+}
+
+// FIREBASE CONFIG PLACEHOLDER
+const firebaseConfig={
+  apiKey: "AIzaSyCyBWuKREPhHPOEFVxUGszbpDdXKQGcdEg",
+  authDomain: "repairtrackersystem.firebaseapp.com",
+  projectId: "repairtrackersystem",
+  storageBucket: "repairtrackersystem.firebasestorage.app",
+  messagingSenderId: "181636666453",
+  appId: "1:181636666453:web:9fa73b02c4a6cbba7370dc"
+};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
+
+// ADD / UPDATE ORDER
+function addOrder(){
+  const customerName=document.getElementById('customerName').value;
+  const phoneNumber=document.getElementById('phoneNumber').value;
+  const orderID=document.getElementById('orderID').value;
+  const advancePaid=Number(document.getElementById('advancePaid').value);
+  const totalAmount=Number(document.getElementById('totalAmount').value);
+  const status=document.getElementById('status').value;
+  if(!orderID){alert('Order ID is required');return;}
+  db.collection('orders').doc(orderID).set({
+    customerName,phoneNumber,orderID,status,advancePaid,totalAmount,
+    createdAt:firebase.firestore.Timestamp.now()
+  })
+  .then(()=>{document.getElementById('message').innerText='Order saved successfully.';})
+  .catch(err=>{document.getElementById('message').innerText='Error: '+err.message;});
+}
+
+// ADD / UPDATE INVENTORY
+function addInventory(){
+  const itemName=document.getElementById('itemName').value;
+  const price=Number(document.getElementById('price').value);
+  const quantity=Number(document.getElementById('quantity').value);
+  const reorderLevel=Number(document.getElementById('reorderLevel').value);
+  if(!itemName){alert('Item Name is required');return;}
+  db.collection('inventory').doc(itemName).set({itemName,price,quantity,reorderLevel})
+  .then(()=>{document.getElementById('message').innerText='Inventory saved successfully.';})
+  .catch(err=>{document.getElementById('message').innerText='Error: '+err.message;});
+}
+</script>
+</body>
+</html>

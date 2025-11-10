@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Medusa Nextgen Display</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto:wght@400&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Roboto',sans-serif;color:#fff;background:#111;overflow-x:hidden;}
+a{text-decoration:none;}
+.hero{height:100vh;position:relative;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;}
+.hero div.bg-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;animation:fade 15s infinite;}
+.hero div.bg-slide:nth-child(1){background-image:url('phone1.jpg');animation-delay:0s;}
+.hero div.bg-slide:nth-child(2){background-image:url('phone2.jpg');animation-delay:5s;}
+.hero div.bg-slide:nth-child(3){background-image:url('phone3.jpg');animation-delay:10s;}
+@keyframes fade{0%{opacity:0}5%{opacity:1}30%{opacity:1}35%{opacity:0}100%{opacity:0}}
+.hero::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.4);}
+.hero-content{position:relative;z-index:2;}
+.hero h1{font-family:'Orbitron',sans-serif;font-size:3.5rem;margin:0 0 20px 0;letter-spacing:2px;color:#fff;}
+.btn{display:inline-block;padding:15px 30px;margin:10px;background:linear-gradient(90deg,#00e5ff,#0066ff);color:#fff;border-radius:8px;font-weight:500;transition:transform 0.3s;}
+.btn:hover{transform:scale(1.05);}
+.section{padding:60px 20px;text-align:center;}
+.section:nth-child(even){background:#222;}
+.section h2{font-family:'Orbitron',sans-serif;font-size:2rem;margin-bottom:20px;color:#00e5ff;}
+.section p{max-width:700px;margin:0 auto;font-size:1.1rem;line-height:1.6;}
+.gallery-section{padding:80px 20px;text-align:center;background:#111;}
+.gallery-section h2{font-family:'Orbitron',sans-serif;font-size:2.2rem;color:#00e5ff;margin-bottom:40px;}
+.gallery{display:flex;flex-wrap:wrap;justify-content:center;gap:30px;}
+.gallery-item{width:300px;opacity:0;transform:translateY(50px);transition:all 0.8s ease-out;}
+.gallery-item img{width:100%;border-radius:12px;box-shadow:0 10px 20px rgba(0,0,0,0.5);}
+.gallery-item.visible{opacity:1;transform:translateY(0);}
+.gallery-item img:hover{transform:scale(1.05);transition:transform 0.5s;}
+@media(max-width:768px){.hero h1{font-size:2.5rem;}}
+</style>
+</head>
+<body>
+
+<!-- HERO SLIDESHOW -->
+<div class="hero">
+  <div class="bg-slide"></div>
+  <div class="bg-slide"></div>
+  <div class="bg-slide"></div>
+  <div class="hero-content">
+    <h1>Medusa Nextgen Display</h1>
+    <a class="btn" href="track.html">Track Your Order</a>
+    <a class="btn" href="inventory.html">Check Inventory</a>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Why Choose Us?</h2>
+  <p>High-end mobile display solutions with premium craftsmanship and cutting-edge technology. From submission to installation, we keep you updated every step of the way.</p>
+</div>
+
+<div class="section">
+  <h2>Our Process</h2>
+  <p>Order Placed → Shipped from China → Received in Sri Lanka → Custom Clearance → Ready to Collect. Customers can track every step in real-time via WhatsApp.</p>
+</div>
+
+<div class="gallery-section">
+  <h2>Our Mobile Displays</h2>
+  <div class="gallery">
+    <div class="gallery-item"><img src="display1.jpg" alt="Display 1"></div>
+    <div class="gallery-item"><img src="display2.jpg" alt="Display 2"></div>
+    <div class="gallery-item"><img src="display3.jpg" alt="Display 3"></div>
+    <div class="gallery-item"><img src="display4.jpg" alt="Display 4"></div>
+    <div class="gallery-item"><img src="display5.jpg" alt="Display 5"></div>
+  </div>
+</div>
+
+<script>
+const galleryItems = document.querySelectorAll('.gallery-item');
+function revealGallery() {
+  const triggerBottom = window.innerHeight * 0.85;
+  galleryItems.forEach(item=>{
+    const itemTop = item.getBoundingClientRect().top;
+    if(itemTop < triggerBottom){item.classList.add('visible');}
+  });
+}
+window.addEventListener('scroll',revealGallery);
+window.addEventListener('load',revealGallery);
+</script>
+
+</body>
+</html>
